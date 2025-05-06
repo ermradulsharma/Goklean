@@ -1,0 +1,209 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import 'primevue/resources/themes/saga-blue/theme.css';
+@import 'primevue/resources/primevue.min.css';
+@import 'primeicons/primeicons.css';
+@import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
+@import 'vue-good-table-next/dist/vue-good-table-next.css';
+@import 'v-calendar/dist/style.css';
+@import "vue-select/dist/vue-select.css";
+
+/* General Styles */
+
+:root {
+    --custom-font: "Source Sans Pro";
+    --primary-color: #05887d;
+    --secondary-color: #8d4aa5;
+}
+.export-btn{
+	margin-right:15px;
+}
+
+.page-heading {
+    @apply py-4 text-2xl leading-tight text-gray-800 truncate;
+}
+.flex-date{
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+.flex-col-first{
+    width: 100%;
+    max-width: 35%;
+    flex: 0 0 35%;
+}
+.flex-col-second{
+    width: 100%;
+    max-width: 65%;
+    flex: 0 0 65%;
+}
+.flex-col-second .w-full
+{
+    margin-bottom: 1rem;
+}
+.day-height{
+	height: 42px;
+    margin-bottom: 1rem;
+    align-items: center;
+    display: flex;
+}
+.app-heading {
+    @apply text-xl font-semibold text-gray-900;
+}
+
+.card {
+    @apply rounded bg-white shadow-md;
+}
+
+.card-body {
+    @apply p-4 lg:p-6;
+}
+
+.badge {
+    @apply text-sm px-3 py-1 rounded-sm;
+}
+
+.badge-sm {
+    @apply text-xs px-3 py-1 rounded-sm;
+}
+
+.badge-success {
+    @apply bg-green-200 text-green-800;
+}
+
+.badge-danger {
+    @apply bg-red-200 text-red-800;
+}
+
+.gk-btn {
+    @apply font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150;
+}
+
+.gk-btn-lg {
+    @apply font-bold uppercase text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150;
+}
+
+.gk-btn-sm {
+    @apply font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150;
+}
+
+.gk-btn-primary {
+    @apply  hover:bg-blue-800 bg-blue-600 text-white;
+}
+
+.gk-btn-success {
+    @apply bg-green-500 hover:bg-green-600 text-white;
+}
+
+.gk-btn-danger {
+    @apply bg-red-500 hover:bg-red-600 text-white;
+}
+
+.gk-link-success {
+    @apply transition duration-150 ease-in-out cursor-pointer text-green-500 hover:text-green-700 hover:underline;
+}
+
+/* VueGoodTable Styles */
+
+table.vgt-table {
+    @apply border-none bg-transparent text-base;
+}
+
+.vgt-table thead {
+    @apply bg-white;
+}
+
+.vgt-responsive {
+    overflow-x: visible !important;
+}
+
+.vgt-table.bordered th {
+    @apply border-none bg-transparent uppercase;
+    background: none;
+}
+
+.vgt-table.bordered thead tr:nth-child(2) th {
+    @apply border-none bg-gray-100;
+    padding: 10px;
+}
+
+.vgt-table.bordered tbody tr {
+    @apply border-b border-t border-gray-100 bg-white;
+    -webkit-transition: all .3s ease;
+    transition: all .3s ease;
+}
+
+.vgt-table.bordered tbody tr:hover {
+    @apply bg-gray-50;
+}
+
+.vgt-table.bordered td {
+    @apply border-none text-base;
+    padding: 5px 15px;
+    vertical-align: middle;
+}
+
+.vgt-wrap__footer .footer__navigation__page-info__current-entry {
+    @apply border-none text-white bg-gray-400 rounded-sm outline-none;
+    line-height: 1.25rem;
+    width: 50px;
+    height: 30px;
+}
+
+.vgt-wrap__footer .footer__navigation__page-info__current-entry [type='text'] {
+    @apply p-0 rounded-sm;
+}
+
+.vgt-wrap__footer .footer__row-count__select {
+    @apply text-white bg-gray-400 rounded-sm border-gray-400;
+    background-image: none;
+}
+
+.vgt-wrap__footer .footer__row-count__select:focus {
+    @apply border-gray-300 outline-none;
+}
+
+.vgt-global-search {
+    @apply border-none bg-transparent;
+}
+
+.vgt-wrap__footer {
+    @apply border-none bg-white px-4 py-4 text-sm;
+    background: none;
+}
+
+.vgt-wrap__footer .footer__row-count__label {
+    @apply uppercase;
+}
+
+.vgt-wrap__footer .footer__navigation__page-info span {
+    @apply uppercase;
+}
+.vgt-wrap__footer .footer__navigation__page-btn span {
+    @apply uppercase;
+}
+
+.p-sidebar-close {
+    position: absolute !important;
+    top: 42px !important;
+    right: 54px !important;
+    z-index: 1 !important;
+}
+
+.vs__search {
+    padding: 4px 7px !important;
+}
+
+.p-invalid {
+    @apply text-red-500;
+}
+
+.action-item {
+    @apply w-full text-gray-700 block px-4 py-2 text-sm text-left hover:bg-gray-50;
+}
+.form-group.form-check .form-check-label {
+	min-width: 120px;
+    display: inline-block;
+}
