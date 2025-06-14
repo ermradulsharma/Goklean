@@ -18,7 +18,7 @@ class ScheduleTransformer extends TransformerAbstract
     {
         $items = [];
         foreach ($schedule->items as $item) {
-            if($item['pivot']['enabled']) {
+            if ($item['pivot']['enabled']) {
                 array_push($items, $item['name']);
             }
         }
@@ -28,8 +28,8 @@ class ScheduleTransformer extends TransformerAbstract
             'booking_id' => $schedule->booking->id,
             'booking_code' => $schedule->booking->code,
             'service_unit' => $schedule->serviceUnit->first_name,
-            'customer' => $schedule->customer->full_name,
-            'customer_car' => $schedule->customerCar->car->full_name,
+            'customer' => $schedule->customer ? $schedule->customer->first_name . ' ' . $schedule->customer->last_name : null,
+            'customer_car' => $schedule->customerCar->car->name,
             'date' => Carbon::parse($schedule->date)->toDayDateTimeString(),
             'status' => getBookingStatuses()[$schedule->status],
             'reason' => $schedule->reason ? getReasons()[$schedule->reason] : null,

@@ -1,6 +1,6 @@
 <template>
     <Link :href="'/'">
-        <img class="w-16 h-16" :src="$page.props.appUrl + 'images/logo.png'" />
+        <img class="w-16 h-16" :src="'/images/logo.png'" />
     </Link>
 </template>
 

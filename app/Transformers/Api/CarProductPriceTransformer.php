@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Transformers\Api;
+namespace App\Transformers\Api;
 
 use App\Models\CarType;
 use League\Fractal\TransformerAbstract;

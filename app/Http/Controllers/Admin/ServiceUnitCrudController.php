@@ -24,10 +24,12 @@ class ServiceUnitCrudController extends Controller
     public function index(ServiceUnitFilters $filters)
     {
         return Inertia::render('Admin/ServiceUnits', [
-            'serviceUnits' => function () use($filters) {
-                return fractal(ServiceUnit::filter($filters)
-                    ->paginate(request()->perPage != null ? request()->perPage : 10),
-                    new ServiceUnitTransformer())->toArray();
+            'serviceUnits' => function () use ($filters) {
+                return fractal(
+                    ServiceUnit::filter($filters)
+                        ->paginate(request()->perPage != null ? request()->perPage : 10),
+                    new ServiceUnitTransformer()
+                )->toArray();
             },
             'cities' => City::select('id', 'name')->get()
         ]);
@@ -93,17 +95,21 @@ class ServiceUnitCrudController extends Controller
         $serviceUnit->last_name = $request['number_plate'];
         $serviceUnit->mobile = $request['mobile'];
         $serviceUnit->email = $request['email'];
-        $serviceUnit->email_verified_at = now()->toDateTimeString();
-        $serviceUnit->mobile_verified_at = now()->toDateTimeString();
         $serviceUnit->city_id = $request['city_id'];
         $serviceUnit->is_active = $request['is_active'];
+        if ($serviceUnit->isDirty('email')) {
+            $serviceUnit->email_verified_at = now();
+        }
 
-        if($request['password'] != null || $request['password'] != '') {
+        if ($serviceUnit->isDirty('mobile')) {
+            $serviceUnit->mobile_verified_at = now();
+        }
+
+        if ($request->filled('password')) {
             $serviceUnit->password = Hash::make($request['password']);
         }
 
-        $serviceUnit->update();
-
+        $serviceUnit->save();
         return redirect()->back()->with('successMessage', 'Service Unit was successfully updated!');
     }
 
@@ -118,13 +124,12 @@ class ServiceUnitCrudController extends Controller
         try {
             $serviceUnit = ServiceUnit::find($id);
 
-            if(!$serviceUnit->canSecureDelete('bookings')) {
+            if (!$serviceUnit->canSecureDelete('bookings')) {
                 return redirect()->back()->with('errorMessage', 'Unable to Delete Service Unit! Remove from all associations and try again!');
             }
 
             $serviceUnit->secureDelete('bookings');
-        }
-        catch (\Illuminate\Database\QueryException $e){
+        } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->with('errorMessage', 'Unable to Delete Service Unit . Remove all associations and Try again!');
         }
 

@@ -65,8 +65,7 @@
                         </button>
                     </div>
                     <label for="customer_car_id" class="pb-2 font-semibold text-gray-800">Customer Car</label>
-                    <VueSelect id="customer_car_id" v-model="customerCarId" :options="customerCars" @search="searchCustomerCars"
-                              :reduce="car => car.id" label="name">
+                    <VueSelect id="customer_car_id" v-model="customerCarId" :options="customerCars" @search="searchCustomerCars" :reduce="car => car.id" label="name">
                         <template v-slot:no-options="{ search, searching }">
                             <template v-if="searching">No results were found for this search.</template>
                             <em v-else class="opacity-50">Start typing to search.</em>

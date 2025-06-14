@@ -16,7 +16,7 @@ class BasePriceCrudController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function index()
+    /* public function index()
     {
         $car_types = CarType::with('prices')->orderBy('id', 'asc')->get();
         $washes = Wash::get();
@@ -36,6 +36,29 @@ class BasePriceCrudController extends Controller
             'washes' => $washes,
             'carTypes' => $carTypes->all()
         ]);
+    } */
+
+    public function index()
+    {
+        $carTypes = CarType::with('prices')->orderBy('id', 'asc')->get()->map(function ($carType) {
+            return [
+                'id' => $carType->id,
+                'key' => $carType->slug,
+                'name' => $carType->name,
+                'prices' => $carType->prices->mapWithKeys(function ($price) {
+                    $washQty = $price->pivot->wash_qty ?? null;
+                    $priceValue = $price->pivot->price ?? null;
+                    return $washQty !== null ? [$washQty => $priceValue] : [];
+                }),
+            ];
+        });
+
+        $washes = Wash::all();
+
+        return Inertia::render('Admin/BasePrices', [
+            'washes' => $washes,
+            'carTypes' => $carTypes,
+        ]);
     }
 
     /**
@@ -53,7 +76,7 @@ class BasePriceCrudController extends Controller
             foreach ($price['prices'] as $key => $value) {
                 $items[$key] = ['price' => $value];
             }
-           $prices[$price['key']] = $items;
+            $prices[$price['key']] = $items;
         }
 
         $carTypes = CarType::get();

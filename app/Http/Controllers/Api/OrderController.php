@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Transformers\Api\OrderTransformer;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class OrderController
 {
@@ -27,13 +29,30 @@ class OrderController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getInvoices()
+    public function getInvoices(Request $request)
     {
-        $customer = request()->user();
-        $data = $customer->invoices()->where('transaction_id', '=', null)->whereNotNull('subscription_id')->whereIn('status', ['created'])->with(['customerCar', 'subscription' => function ($query) {
-            $query->with('plan:id,name');
-        }])->get();
-        $orders = fractal($data, new OrderTransformer())->toArray();
-        return response()->json($orders['data'], 200);
+        try {
+            $customer = $request->user();
+            if (!$customer) {
+                return response()->json(['error' => 'Unauthorized access.'], 401);
+            }
+            $invoices = $customer->invoices()->whereNull('transaction_id')->whereNotNull('subscription_id')->whereIn('status', ['created'])->with([
+                'customerCar',
+                'subscription' => function ($query) {
+                    $query->with('plan:id,name');
+                }
+            ])->get();
+            if ($invoices->isEmpty()) {
+                return response()->json(['message' => 'No invoices found.'], 404);
+            }
+            $orders = fractal($invoices, new OrderTransformer())->toArray();
+            return response()->json($orders['data'] ?? [], 200);
+        } catch (\Exception $e) {
+            Log::error('Invoice retrieval failed: ' . $e->getMessage(), [
+                'user_id' => optional($request->user())->id,
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Failed to fetch invoices. Please try again later.'], 500);
+        }
     }
 }

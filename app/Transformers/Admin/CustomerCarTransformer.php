@@ -18,7 +18,7 @@ class CustomerCarTransformer extends TransformerAbstract
         return [
             'id' => $customerCar->id,
             'name' => ucwords(strtolower($customerCar->car->full_name)),
-            'customer' => $customerCar->customer->full_name,
+            'customer' => $customerCar->customer ? $customerCar->customer->first_name . ' ' . $customerCar->customer->last_name : null,
             'number' => $customerCar->number_plate,
             'color' => $customerCar->color,
             'status' => $customerCar->is_active

@@ -10,6 +10,7 @@ use App\Repositories\PricingRepository;
 use App\Transformers\Api\CustomerCarTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class PricingController extends Controller

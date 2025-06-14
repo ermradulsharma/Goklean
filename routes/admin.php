@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Admin\ReferralController;
 use App\Http\Controllers\Admin\ExportCsv;
 use App\Exports\UsersExport;
+use Illuminate\Support\Facades\Artisan;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -171,4 +172,31 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('admin')->group(function
 
 	Route::resource('notification', NotificationController::class);
 	Route::get('/send-notification', [NotificationController::class, 'notify']);
+
+	Route::get('/clear', function () {
+		$commands = [
+			'storage:link',
+			'config:cache',
+			'config:clear',
+			'cache:clear',
+			'route:clear',
+			'view:clear',
+			'auth:clear-resets',
+			'event:clear',
+			'queue:clear',
+			'queue:flush',
+			'schedule:clear-cache'
+		];
+		$output = [];
+		$errors = [];
+		foreach ($commands as $command) {
+			try {
+				Artisan::call($command);
+				$output[$command] = Artisan::output();
+			} catch (\Exception $e) {
+				$errors[$command] = $e->getMessage();
+			}
+		}
+		return $errors ? response()->json(['errors' => $errors], 500) : response()->json(['message' => 'All cache cleared successfully!']);
+	});
 });

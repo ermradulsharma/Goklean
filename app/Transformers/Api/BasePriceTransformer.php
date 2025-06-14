@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Transformers;
+namespace App\Transformers\Api;
 
 use App\Models\BasePrice;
 use League\Fractal\TransformerAbstract;

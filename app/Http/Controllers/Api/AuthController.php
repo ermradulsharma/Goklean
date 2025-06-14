@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController
 {
@@ -21,25 +22,43 @@ class AuthController
 	public function register(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => ['required', 'string', 'max:255'],
-			'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-			'mobile' => ['required', 'numeric', 'unique:users'],
-			'password' => ['required', 'string', 'min:8'],
-			'device_name' => ['required', 'string'],
-			'city_id' => ['required']
+			'name' => 'required|string|max:255',
+			'email' => 'required|string|email|max:255|unique:users,email',
+			'mobile' => 'required|numeric|unique:users,mobile',
+			'password' => 'required|string|min:8',
+			'device_name' => 'required|string',
+			'city_id' => 'required|integer|exists:cities,id'
 		]);
-
 		if ($validator->fails()) {
-			return response()->json(['error' => $validator->errors()], 422);
+			return response()->json([
+				'success' => false,
+				'errors' => $validator->errors(),
+				'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+			], Response::HTTP_UNPROCESSABLE_ENTITY); // 422
 		}
-		$request->request->add(['first_name' => $request->name]);
-		$user = Customer::create($request->except(['name', 'device_name']));
-		$customer = fractal($user, new CustomerTransformer())->toArray();
-		return response()->json([
-			'success' => true,
-			'user' => $customer['data'],
-			'token' => $user->createToken($request->device_name)->plainTextToken
-		], 200);
+		try {
+			$request->request->add(['first_name' => $request->name]);
+			$user = Customer::create($request->except(['name', 'device_name']));
+			$customer = fractal($user, new CustomerTransformer())->toArray();
+			return response()->json([
+				'success' => true,
+				'user' => $customer['data'],
+				'token' => $user->createToken($request->device_name)->plainTextToken
+			], 200);
+			// return response()->json([
+			// 	'success' => true,
+			// 	'status' => Response::HTTP_CREATED,
+			// 	'user' => $customer['data'],
+			// 	'token' => $user->createToken($request->device_name)->plainTextToken
+			// ], Response::HTTP_CREATED); // 201
+		} catch (\Exception $e) {
+			return response()->json([
+				'success' => false,
+				'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+				'message' => 'Registration failed.',
+				'error' => $e->getMessage()
+			], Response::HTTP_INTERNAL_SERVER_ERROR); // 500
+		}
 	}
 
 	public function sendVerificationCode(Request $request, CustomerRepository $repository)
@@ -92,29 +111,30 @@ class AuthController
 	 */
 	public function login(Request $request)
 	{
-		$validator = Validator::make($request->all(), [
-			'email' => ['required', 'string', 'email', 'max:255'],
-			'password' => ['required', 'string', 'min:8'],
-			'device_name' => ['required', 'string']
+		$request->validate([
+			'email' => 'required|string|email|max:255',
+			'password' => 'required|string|min:8',
+			'device_name' => 'required|string|max:255',
 		]);
-		if ($validator->fails()) {
-			return response()->json(['error' => $validator->errors()], 422);
-		}
 		$user = Customer::where('email', $request->email)->where('is_active', 1)->first();
-		if (empty($user)) {
-			return response()->json(['error' => 'The provided email is not registered.'], 420);
-		} else {
-			if (!Hash::check($request->password, $user->password)) {
-				return response()->json(['error' => 'The provided credentials are incorrect.'], 422);
-			}
-			$customer = fractal($user, new CustomerTransformer())->toArray();
+		if (!$user) {
 			return response()->json([
-				'success' => true,
-				'user' => $customer['data'],
-				'token' => $user->createToken($request->device_name)->plainTextToken
-			], 200);
+				'error' => 'The provided email is not registered or the account is inactive.'
+			], 404);
 		}
+		if (!Hash::check($request->password, $user->password)) {
+			return response()->json([
+				'error' => 'The provided credentials are incorrect.'
+			], 401);
+		}
+		$customer = fractal($user, new CustomerTransformer())->toArray();
+		return response()->json([
+			'success' => true,
+			'user' => $customer['data'],
+			'token' => $user->createToken($request->device_name)->plainTextToken,
+		], 200);
 	}
+
 
 	public function sendLoginOTP(Request $request, CustomerRepository $repository)
 	{
@@ -171,7 +191,12 @@ class AuthController
 	public function getUser(Request $request)
 	{
 		$data = fractal($request->user(), new CustomerTransformer())->toArray();
-		return response()->json($data["data"], 200);
+		return response()->json([
+			'success' => true,
+			'status' => Response::HTTP_OK,
+			'message' => 'User data fetched successfully.',
+			'data' => $data['data']
+		], Response::HTTP_OK);
 	}
 
 	/**
@@ -182,13 +207,29 @@ class AuthController
 	 */
 	public function saveFcmToken(Request $request)
 	{
-		$tokens = $request->user()->preferences->get('fcm_tokens', []);
-		if (!in_array($request->token, $tokens, true)) {
-			array_push($tokens, $request->token);
+		$validator = Validator::make($request->all(), [
+			'token' => 'required|string'
+		]);
+		if ($validator->fails()) {
+			return response()->json([
+				'success' => false,
+				'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+				'errors' => $validator->errors()
+			], Response::HTTP_UNPROCESSABLE_ENTITY);
 		}
-		$request->user()->preferences->set('fcm_tokens', $tokens);
-		$request->user()->save();
-		return response()->json(['success' => true], 200);
+		$user = $request->user();
+		$tokens = $user->preferences->get('fcm_tokens', []);
+		if (!in_array($request->token, $tokens, true)) {
+			$tokens[] = $request->token;
+			$user->preferences->set('fcm_tokens', $tokens);
+			$user->save();
+		}
+		return response()->json([
+			'success' => true,
+			'status' => Response::HTTP_OK,
+			'message' => 'FCM token saved successfully.',
+			'data' => ['tokens' => $tokens]
+		], Response::HTTP_OK);
 	}
 
 	/**
@@ -200,7 +241,12 @@ class AuthController
 	public function logout(Request $request)
 	{
 		$request->user()->tokens()->delete();
-		return response()->json(["message" => "Successfully Logout"], 200);
+
+		return response()->json([
+			'success' => true,
+			'status' => Response::HTTP_OK,
+			'message' => 'Successfully logged out.'
+		], Response::HTTP_OK);
 	}
 
 	/**
@@ -210,6 +256,10 @@ class AuthController
 	 */
 	public function unauthenticated()
 	{
-		return response()->json(["status" => "unauthenticated"], 403);
+		return response()->json([
+			'success' => false,
+			'status' => Response::HTTP_UNAUTHORIZED,
+			'message' => 'Unauthenticated access. Please log in.'
+		], Response::HTTP_UNAUTHORIZED);
 	}
 }

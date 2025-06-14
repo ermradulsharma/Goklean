@@ -58,13 +58,8 @@
             <!-- Mobile -->
             <div class="w-full flex flex-col mb-6">
                 <label for="mobile" class="pb-2 font-semibold text-gray-800">Mobile <span class="ml-1 text-red-400">*</span></label>
-                <InputText type="number"
-                           id="mobile"
-                           v-model="form.mobile"
-                           placeholder="Enter Mobile" aria-describedby="mobile-help"
-                           :class="[errors.mobile ? 'p-invalid' : '']"
-
-                />
+                <InputMask id="phone" v-model="form.mobile" mask="(999) 999-9999" placeholder="Enter Mobile Number" aria-describedby="mobile-help" :class="[errors.mobile ? 'p-invalid' : '']" />
+                <!-- <InputText type="number" id="mobile" v-model="form.mobile" placeholder="Enter Mobile" aria-describedby="mobile-help" :class="[errors.mobile ? 'p-invalid' : '']"/> -->
                 <small id="mobile-help" v-if="errors.mobile" class="p-invalid">{{ errors.mobile }}</small>
             </div>
 
@@ -111,6 +106,7 @@
 </template>
 <script>
     import { defineComponent } from 'vue'
+    import InputMask from 'primevue/inputmask';
     import InputText from 'primevue/inputtext';
     import Button from 'primevue/button';
     import InputSwitch from 'primevue/inputswitch';
@@ -125,7 +121,8 @@
             InputSwitch,
             FormInputShimmer,
             FormSwitchShimmer,
-            Dropdown
+            Dropdown,
+            InputMask
         },
         props: {
             editFlag: Boolean,
@@ -171,7 +168,10 @@
             },
             update() {
                 this.formValidated = true;
-                this.$inertia.patch(route('service-units.update', { id: this.serviceUnitId }), this.form, {
+                this.$inertia.post(route('service-units.update', this.serviceUnitId), {
+                    ...this.form,
+                    _method: 'PATCH',
+                }, {
                     onSuccess: () => {
                         if (Object.keys(this.errors).length === 0) {
                             this.$emit('close', true);

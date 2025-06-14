@@ -27,7 +27,7 @@
                     <div v-if="!editFlag" class="w-full flex flex-col mb-6">
                         <label for="products" class="pb-2 font-semibold text-gray-800">Choose Products <span class="ml-1 text-red-400">*</span></label>
                         <VueSelect taggable multiple id="products" v-model="form.products" :options="products" label="name" placeholder="Select Products" />
-                        <small id="products-help" v-if="errors.customer_car_id" class="p-invalid">{{ errors.customer_car_id }}</small>
+                        <small id="products-help" v-if="errors.products" class="p-invalid">{{ errors.products }}</small>                       
                     </div>
                     <!--Preferences -->
                     <table v-if="invoice && invoice.subscription_id" class="w-full table-auto">
@@ -74,7 +74,7 @@
                                 <label class="pb-2 font-semibold text-gray-800">Order Type <span class="ml-1 text-red-400">*</span></label>
                                 <div class="w-full flex items-center gap-4">
                                     <div v-for="type of orderTypes" :key="type.code" class="field-radiobutton">
-                                        <RadioButton :id="type.code" name="category" :value="type.code" v-model="form.order_type" :disabled="editFlag || type.code === 'bulk'"></RadioButton>
+                                        <RadioButton :id="type.code" name="category" :value="type.code" v-model="form.order_type" :disabled="editFlag"></RadioButton>
                                         <label class="ml-1" :for="type.code">{{type.name}}</label>
                                     </div>
                                 </div>
@@ -245,7 +245,7 @@
                     transaction_id: this.editFlag ? this.invoice.transaction_id : '',
                     status: this.editFlag ? this.invoice.status : 'created',
                     booking_completed: this.editFlag ? this.invoice.booking_completed : false,
-                    products: this.editFlag ? this.invoice.data.items : [],
+                    products: this.editFlag ? this.invoice?.data?.items || [] : [],
                     preferences: this.editFlag ? this.invoice.preferences : this.preferences,
                 },
                 masks: {
@@ -271,6 +271,15 @@
                     this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Transaction ID is required for online payments.', life: 3000 });
                     return;
                 }
+                if (!this.form.products.length) {
+                    this.$toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Please select at least one product.',
+                        life: 3000
+                    });
+                    return;
+                }
                 this.editFlag ? this.update() : this.create();
             },
             create() {
@@ -294,15 +303,11 @@
         },
         computed: {
             totalPrice() {
-                let price = 0;
-                this.form.products.forEach((product) => {
-                    if(product.has_discount) {
-                        price += (product.qty * product.discounted_price);
-                    } else {
-                        price += (product.qty * product.price);
-                    }
-                });
-                return price;
+                return this.form.products.reduce((total, product) => {
+                    const qty = Number(product.qty) || 0;
+                    const price = product.has_discount ? product.discounted_price : product.price;
+                    return total + qty * price;
+                }, 0);
             }
         }
     })

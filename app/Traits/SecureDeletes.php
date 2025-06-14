@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: SecureDeletes.php
  * Last modified: 17/06/21, 3:44 PM
@@ -17,19 +18,13 @@ trait SecureDeletes
      */
     public function secureDelete(String ...$relations)
     {
-        $hasRelation = false;
         foreach ($relations as $relation) {
-            if ($this->$relation()->withTrashed()->count()) {
-                $hasRelation = true;
-                break;
+            if (method_exists($this, $relation) && $this->$relation()->withTrashed()->exists()) {
+                $this->delete();
+                return;
             }
         }
-
-        if ($hasRelation) {
-            $this->delete();
-        } else {
-            $this->forceDelete();
-        }
+        $this->forceDelete();
     }
 
     /**
@@ -38,20 +33,13 @@ trait SecureDeletes
      * @param array $relations
      * @return bool
      */
-    public function canSecureDelete(String ...$relations)
+    public function canSecureDelete(string ...$relations): bool
     {
-        $hasRelation = false;
         foreach ($relations as $relation) {
-            if ($this->$relation()->withTrashed()->count()) {
-                $hasRelation = true;
-                break;
+            if (method_exists($this, $relation) && $this->$relation()->withTrashed()->exists()) {
+                return false;
             }
         }
-
-        if ($hasRelation) {
-            return false;
-        } else {
-            return true;
-        }
+        return true;
     }
 }

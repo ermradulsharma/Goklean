@@ -5,18 +5,21 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\OrderTransformer;
 use App\Models\BasePrice;
+use App\Models\Customer;
 use App\Models\CustomerCar;
 use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\Product;
 use App\Models\Subscription;
+use App\Models\User;
 use App\Repositories\BookingRepository;
 use App\Repositories\PricingRepository;
 use App\Repositories\RazorpayRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Razorpay\Api\Api;
 use Razorpay\Api\Errors\SignatureVerificationError;
@@ -42,6 +45,8 @@ class PaymentController extends Controller
      */
     public function createOrder(Request $request, PricingRepository $repository)
     {
+
+        // return response()->json(['errors' => $request->user()]);
         $validator = Validator::make($request->all(), [
             'customer_car_id' => 'required',
             'product_id' => 'required',
@@ -115,6 +120,7 @@ class PaymentController extends Controller
                 'mobile' => '91' . $customer->mobile
             ], 200);
         } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
             return response()->json(['errors' => 'Something went wrong. Please try again later.']);
         }
     }
@@ -250,26 +256,55 @@ class PaymentController extends Controller
             'razorpay_order_id' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()]);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
         $verified = $this->razorpayRepository->verifyPayment([
             'razorpay_signature' => $request->get('razorpay_signature'),
             'razorpay_payment_id' => $request->get('razorpay_payment_id'),
             'razorpay_order_id' => $request->get('razorpay_order_id')
         ]);
-        if ($verified) {
-            $invoice = Invoice::where('reference_id', '=', $request->get('razorpay_order_id'))->first();
-            $invoice->payment_date = Carbon::now()->toDateTimeString();
-            $invoice->transaction_id = $request->get('razorpay_payment_id');
-            $invoice->status = 'paid';
-            $invoice->data->set([
-                'razorpay' => $validator->validated()
-            ]);
-            $invoice->save();
-            return response()->json(['success' => true], 200);
-        } else {
-            return response()->json(['success' => false], 200);
+        if (!$verified) {
+            return response()->json(['success' => false, 'message' => 'Payment verification failed.'], 400);
         }
+        $invoice = Invoice::where('reference_id', $request->get('razorpay_order_id'))->first();
+        if (!$invoice) {
+            return response()->json(['error' => 'Invoice not found.'], 404);
+        }
+        $invoice->payment_date = Carbon::now()->toDateTimeString();
+        $invoice->transaction_id = $request->get('razorpay_payment_id');
+        $invoice->status = 'paid';
+        $invoice->data->set([
+            'razorpay' => $validator->validated()
+        ]);
+        if ($invoice->save()) {
+            $customer = Customer::find($invoice->customer_id);
+            if ($customer) {
+                $wallet = $customer->wallet;
+                if (!$wallet) {
+                    Log::error("Wallet not found for user ID: {$customer->id}");
+                    return response()->json([
+                        'error' => 'Wallet not found for this customer.'
+                    ], 500);
+                }
+                $amountInCents = $invoice->total_price * 100;
+                try {
+                    if ($wallet->canWithdraw($amountInCents)) {
+                        $wallet->withdraw($amountInCents, [
+                            'description' => 'Invoice payment for Invoice #' . $invoice->invoice_id,
+                        ]);
+                    } else {
+                        return redirect()->back()->withErrors([
+                            'wallet_transaction_amount' => 'Insufficient wallet balance for this withdrawal.',
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Wallet deduction failed: ' . $e->getMessage());
+                    return response()->json(['error' => 'Wallet deduction failed. Please try again later.'], 500);
+                }
+            }
+        }
+        return response()->json(['success' => true], 200);
     }
 
     /**

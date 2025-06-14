@@ -19,10 +19,12 @@ class ReferralController extends Controller
     public function index(RefundFilters $filters)
     {
         return Inertia::render('Admin/Referrals', [
-            'referrals' => function () use($filters) {
-                return fractal(Referral::with(['customer', 'referredBy'])->filter($filters)
-                    ->paginate(request()->perPage != null ? request()->perPage : 10),
-                    new ReferralTransformer())->toArray();
+            'referrals' => function () use ($filters) {
+                return fractal(
+                    Referral::with(['customer', 'referredBy'])->filter($filters)
+                        ->paginate(request()->perPage != null ? request()->perPage : 10),
+                    new ReferralTransformer()
+                )->toArray();
             },
             'statuses' => [
                 ['value' => 'pending', 'text' => 'Pending'],
@@ -43,13 +45,12 @@ class ReferralController extends Controller
         try {
             $refund = Referral::find($id);
 
-            if($refund->transaction()->count()) {
+            if ($refund->transaction()->count()) {
                 return redirect()->back()->with('errorMessage', 'Unable to Delete Referral! Transactions exist!');
             }
 
             $refund->delete();
-        }
-        catch (\Illuminate\Database\QueryException $e){
+        } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->with('errorMessage', 'Unable to Delete Referral. Remove all associations and Try again!');
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Transformers;
+namespace App\Transformers\Api;
 
 use App\Models\Booking;
 use Carbon\Carbon;
@@ -23,7 +23,7 @@ class ServiceBookingTransformer extends TransformerAbstract
             'number_plate'            => (string) $booking->customerCar->number_plate,
             'service_unit'            => (string) $booking->serviceUnit->name,
             'has_interior'       => (bool) $booking->is_interior_enabled,
-            'booking_status'       => (string) getBookingStatusText($booking->booking_status),
+            'booking_status'       => (string) getBookingStatuses()[$booking->booking_status],
             'interior_status'       => (string) getInteriorStatusText($booking->interior_status),
         ];
     }

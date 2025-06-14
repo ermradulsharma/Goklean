@@ -8,9 +8,11 @@ use App\Traits\SecureDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
 
 class ServiceUnit extends Model
 {
+    use HasApiTokens;
     use HasFactory;
     use SoftDeletes;
     use SecureDeletes;
@@ -22,9 +24,7 @@ class ServiceUnit extends Model
     */
 
     protected $table = 'users';
-
     protected $guarded = [];
-
     protected $casts = [
         'is_active' => 'boolean'
     ];
@@ -39,8 +39,9 @@ class ServiceUnit extends Model
     {
         static::addGlobalScope(new ServiceUnitScope);
         static::created(function ($unit) {
-            $unit->unique_code = $unit->unique;
-            $unit->save();
+            $unit->updateQuietly([
+                'unique_code' => $unit->unique, // Uses accessor below
+            ]);
         });
     }
 
