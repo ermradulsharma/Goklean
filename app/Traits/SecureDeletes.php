@@ -1,11 +1,5 @@
 <?php
 
-/**
- * File name: SecureDeletes.php
- * Last modified: 17/06/21, 3:44 PM
- * Author: NearCraft - https://codecanyon.net/user/nearcraft
- * Copyright (c) 2021
- */
 
 namespace App\Traits;
 

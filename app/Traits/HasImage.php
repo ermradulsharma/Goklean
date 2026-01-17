@@ -1,11 +1,5 @@
 <?php
 
-/**
- * File name: HasImage.php
- * Last modified: 18/05/21, 11:03 PM
- * Author: NearCraft - https://codecanyon.net/user/nearcraft
- * Copyright (c) 2021
- */
 
 namespace App\Traits;
 

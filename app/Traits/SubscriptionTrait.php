@@ -1,10 +1,4 @@
 <?php
-/**
- * File name: SubscriptionTrait.php
- * Last modified: 02/02/22, 4:08 PM
- * Author: NearCraft - https://codecanyon.net/user/nearcraft
- * Copyright (c) 2022
- */
 
 namespace App\Traits;
 
