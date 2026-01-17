@@ -1,38 +1,34 @@
 # Contributing to Goklean
 
-First off, thank you for considering contributing to Goklean! It's people like you that make it a better tool for everyone.
+We welcome contributions from the community! Please follow these guidelines to ensure a productive and collaborative environment.
 
-## Code of Conduct
+## 🐛 Bug Reports
 
-By participating in this project, you are expected to uphold our Code of Conduct. Please be respectful and professional in all interactions.
+If you find a bug, please search the issues to see if it has already been reported. If not, open a new issue and include:
 
-## How Can I Contribute?
+- A clear, descriptive title.
+- Steps to reproduce the issue.
+- Expected vs Actual behavior.
+- Screenshots if applicable.
 
-### Reporting Bugs
+## ✨ Feature Requests
 
-- Use the GitHub Issue Tracker.
-- Describe the bug in detail and provide steps to reproduce it.
-- Include information about your environment (OS, PHP version, etc.).
+Open an issue to discuss the feature before implementing it. This helps ensure it aligns with the project's roadmap.
 
-### Suggesting Enhancements
+## 🔨 Development Workflow
 
-- Open a GitHub Issue with the tag "enhancement".
-- Explain the feature and why it would be useful.
+1.  **Fork** the repository and create your branch from `main`.
+2.  **Lint** your code: Ensure you follow PSR-12 standards.
+3.  **Tests**: If you add code that should be tested, add tests.
+4.  **Commit**: Use descriptive commit messages.
+5.  **PR**: Submit a pull request to the `main` branch.
 
-### Pull Requests
+### Coding Standards
 
-1. Fork the repository.
-2. Create a new branch for your feature or bugfix (`git checkout -b feature/awesome-feature`).
-3. Make your changes and ensure they follow the project's coding standards.
-4. Add tests for your changes if applicable.
-5. Commit your changes (`git commit -m 'Add some feature'`).
-6. Push to the branch (`git push origin feature/awesome-feature`).
-7. Open a Pull Request.
+- **PHP**: PSR-12
+- **Naming**: Use camelCase for methods and variables, PascalCase for classes.
+- **Database**: Always use migrations and seeders for schema/data changes.
 
-## Coding Standards
+## 🔒 Security
 
-This project follows PSR-12 coding standards. Please ensure your code conforms to these standards before submitting a pull request. You can use tools like `php-cs-fixer` to help with this.
-
-## Questions?
-
-If you have any questions, feel free to open an issue or reach out to the maintainers.
+If you discover a security vulnerability, please do NOT open an issue. Instead, email the maintainers directly at [security@goklean.com](mailto:security@goklean.com).

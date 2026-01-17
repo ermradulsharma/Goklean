@@ -1,20 +1,25 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to the Goklean project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [v1.1.0] - 2026-01-17
 
-## [Unreleased]
+### 🛠 Refactored Database Layer
 
-### Fixed
+- **Migration Fix**: Corrected the `down()` sequence in `service_complaints` to prevent foreign key errors during rollback.
+- **Naming Standardization**: Renamed foreign keys in images tables to follow singular naming conventions (e.g., `service_complaint_id`).
+- **Schema Cleanup**: Removed redundant `image` column in `car_service_images` in favor of `image_path`.
+- **Stability**: Added missing `down()` methods to core migrations like `settings`.
 
-- Fixed database migrations to ensure correct order of table drops during rollback.
-- Corrected foreign key naming in `service_complaints_images` table.
-- Removed redundant `image` column from `car_service_images` table.
-- Added missing `down()` method to `settings` migration.
-- Synchronized Models and Controllers with recent schema changes.
+### 🏗 Architecture & DX
 
-### Added
+- **GitHub Documentation**: Added comprehensive `README.md`, `CONTRIBUTING.md`, and `CHANGELOG.md`.
+- **CI/CD**: Implemented GitHub Actions workflow for automated testing with PostgreSQL.
+- **Model Sync**: Updated Eloquent relationships and `$fillable` attributes to match revised schema.
 
-- Created GitHub documentation: `README.md`, `CONTRIBUTING.md`, `CHANGELOG.md`, `LICENSE`.
-- Added GitHub Actions workflow for automated testing.
+## [v1.0.0] - Initial Release
+
+- Core booking and scheduling engine.
+- Razorpay and Wallet integration.
+- Service unit mobile API.
+- Customer management portal.
