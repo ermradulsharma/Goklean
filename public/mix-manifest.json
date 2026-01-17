@@ -1,4 +1,10 @@
 {
     "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css"
+    "/css/app.css": "/css/app.css",
+    "/css/vendor.css": "/css/vendor.css",
+    "/css/fonts/primeicons.eot": "/css/fonts/primeicons.eot",
+    "/css/fonts/primeicons.svg": "/css/fonts/primeicons.svg",
+    "/css/fonts/primeicons.ttf": "/css/fonts/primeicons.ttf",
+    "/css/fonts/primeicons.woff": "/css/fonts/primeicons.woff",
+    "/css/fonts/primeicons.woff2": "/css/fonts/primeicons.woff2"
 }

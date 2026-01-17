@@ -21,117 +21,131 @@ use App\Http\Controllers\Api\{
 };
 
 /*
-	|--------------------------------------------------------------------------
-	| API Routes
-	|--------------------------------------------------------------------------
-	|
-	| Here is where you can register API routes for your application. These
-	| routes are loaded by the RouteServiceProvider within a group which
-	| is assigned the "api" middleware group. Enjoy building your API!
-	|
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group.
+|
 */
-// Public routes outside versioning (optional - move if needed)
-Route::get('get_detail/{id}', [CustomerController::class, 'getDetail']);
-Route::get('get_daylist/{id}', [CustomerController::class, 'getDaylist']);
 
-// v1 public routes (unauthenticated)
+// --- Legacy / Non-Versioned Public Routes ---
+// Renamed for consistency but keeping ID structure
+Route::get('customers/detail/{id}', [CustomerController::class, 'getDetail']);     // old: get_detail/{id}
+Route::get('customers/daylist/{id}', [CustomerController::class, 'getDaylist']);   // old: get_daylist/{id}
+
+
+// --- V1 Public Routes (Unauthenticated) ---
 Route::prefix('v1')->group(function () {
 
-	// App base routes
+	// App & Settings
 	Route::get('/', [AppController::class, 'index'])->name('api_version');
 	Route::get('/settings', [AppController::class, 'settings'])->name('app_settings');
 
-	// Auth routes
+	// Home Screen Data
+	Route::get('/cities', [HomeScreenController::class, 'getCities']);      // old: get_cities
+	Route::get('/banners', [HomeScreenController::class, 'getBanners']);    // old: get_banners
+
+	// Authentication & Registration
 	Route::post('register', [AuthController::class, 'register']);
 	Route::post('login', [AuthController::class, 'login']);
 	Route::post('su/login', [ServiceUnitController::class, 'login']);
 
-	// Home screen
-	Route::get('/get_cities', [HomeScreenController::class, 'getCities']);
-	Route::get('/get_banners', [HomeScreenController::class, 'getBanners']);
-
-	// Mobile verification
+	// OTP / Mobile Verification
 	Route::post('/send-verification-code', [AuthController::class, 'sendVerificationCode']);
 	Route::post('/verify-mobile', [AuthController::class, 'verifyMobile']);
 	Route::post('/send-login-code', [AuthController::class, 'sendLoginOTP']);
 	Route::post('/login-with-otp', [AuthController::class, 'loginWithOTP']);
+
+	// Auth Fallback
 	Route::post('/unauthenticated', [AuthController::class, 'unauthenticated'])->name('unauthenticated');
 });
 
+
+// --- V1 Protected Routes (Authenticated) ---
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
-	// Auth
+	// Auth Actions
 	Route::post('logout', [AuthController::class, 'logout']);
 	Route::get('/user', [AuthController::class, 'getUser']);
 	Route::post('/save-fcm-token', [AuthController::class, 'saveFcmToken']);
 
-	// Car
-	Route::get('/search_car', [CarController::class, 'searchCar']);
-	Route::get('/get_color_variants', [CarController::class, 'getColorVariants']);
-	Route::post('/add_car', [CustomerController::class, 'addCar']);
-	Route::delete('/remove_customer_car/{id}', [CustomerController::class, 'removeCar']);
-	Route::get('/get_my_cars', [CustomerController::class, 'getMyCars']);
+	// --- Customer Module ---
+	Route::get('/profile', [CustomerController::class, 'getProfile']);            // old: get_profile
+	Route::patch('/profile/update', [CustomerController::class, 'updateProfile']); // old: update_profile
+	Route::post('/profile/update-location', [CustomerController::class, 'updateLocation']); // old: update_location
+	Route::get('/profile/location', [CustomerController::class, 'getLocation']);    // old: get_location
+	Route::get('/wallet', [CustomerController::class, 'getWalletDetails']);         // old: fetch_wallet
+	Route::post('/profile/update-status', [CustomerController::class, 'status_update']); // old: update_status_active
 
-	// Customer
-	Route::get('/get_profile', [CustomerController::class, 'getProfile']);
-	Route::patch('/update_profile', [CustomerController::class, 'updateProfile']);
-	Route::post('/update_location', [CustomerController::class, 'updateLocation']);
-	Route::get('/get_location', [CustomerController::class, 'getLocation']);
-	Route::get('/fetch_wallet', [CustomerController::class, 'getWalletDetails']);
+	// --- Vehicle Management ---
+	Route::get('/cars/search', [CarController::class, 'searchCar']);                // old: search_car
+	Route::get('/cars/colors', [CarController::class, 'getColorVariants']);         // old: get_color_variants
+	Route::get('/my-cars', [CustomerController::class, 'getMyCars']);               // old: get_my_cars
+	Route::post('/cars/add', [CustomerController::class, 'addCar']);                // old: add_car
+	Route::delete('/cars/{id}', [CustomerController::class, 'removeCar']);          // old: remove_customer_car/{id}
 
-	Route::post('update_status_active', [CustomerController::class, 'status_update']);
+	// --- Operations (Bookings & Schedules) ---
+	Route::get('/schedules', [ScheduleController::class, 'getCustomerSchedules']);  // old: get_customer_schedules
 
-	// Schedule
-	Route::get('/get_customer_schedules', [ScheduleController::class, 'getCustomerSchedules']);
-
-	// Pricing
-	Route::get('/popular_plans', [PlanController::class, 'popularPlans']);
-	Route::get('/popular_products', [ProductController::class, 'popularProducts']);
-	Route::get('/get_car_products/{id}', [PricingController::class, 'getCarProducts']);
-	Route::get('/get_car_plans/{id}', [PricingController::class, 'getCarPlans']);
-	Route::post('/get_estimate', [PricingController::class, 'getEstimate']);
+	// --- Finance & Billing ---
+	// Products & Plans
+	Route::get('/plans/popular', [PlanController::class, 'popularPlans']);          // old: popular_plans
+	Route::get('/products/popular', [ProductController::class, 'popularProducts']); // old: popular_products
+	Route::get('/cars/{id}/products', [PricingController::class, 'getCarProducts']); // old: get_car_products/{id}
+	Route::get('/cars/{id}/plans', [PricingController::class, 'getCarPlans']);       // old: get_car_plans/{id}
+	Route::post('/estimate', [PricingController::class, 'getEstimate']);            // old: get_estimate
 
 	// Subscriptions
-	Route::get('/get_subscriptions', [SubscriptionController::class, 'getSubscriptions']);
-	Route::get('/subscription_history', [SubscriptionController::class, 'subscriptionHistory']);
+	Route::get('/subscriptions', [SubscriptionController::class, 'getSubscriptions']); // old: get_subscriptions
+	Route::get('/subscriptions/history', [SubscriptionController::class, 'subscriptionHistory']); // old: subscription_history
 
 	// Orders & Payments
-	Route::get('/get_orders', [OrderController::class, 'getOrders']);
-	Route::get('/get_invoices', [OrderController::class, 'getInvoices']);
-	Route::post('/create_fetch_order', [PaymentController::class, 'createOrder']);
-	Route::post('/verify_update_order', [PaymentController::class, 'verifyUpdateOrder']);
-	Route::post('/create_authenticate_subscription', [PaymentController::class, 'createAuthenticateSubscription']);
-	Route::post('/verify_update_subscription', [PaymentController::class, 'verifyUpdateSubscription']);
+	Route::get('/orders', [OrderController::class, 'getOrders']);                   // old: get_orders
+	Route::get('/invoices', [OrderController::class, 'getInvoices']);               // old: get_invoices
+	Route::post('/orders/create-fetch', [PaymentController::class, 'createOrder']); // old: create_fetch_order
+	Route::post('/orders/verify', [PaymentController::class, 'verifyUpdateOrder']); // old: verify_update_order
+	Route::post('/subscriptions/create-authenticate', [PaymentController::class, 'createAuthenticateSubscription']); // old: create_authenticate_subscription
+	Route::post('/subscriptions/verify', [PaymentController::class, 'verifyUpdateSubscription']); // old: verify_update_subscription
 
-	// Notifications
+	// --- Notifications ---
 	Route::get('/notifications', [NotificationController::class, 'index'])->name('customer.notifications');
 	Route::post('/notifications/mark-as-read/{id}', [NotificationController::class, 'markAsRead'])->name('customer.notifications.mark_as_read');
 	Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('customer.notifications.mark_all_as_read');
-	Route::delete('/notifications/delete/{id}', [NotificationController::class, 'deleteNotification'])->name('customer.notifications.delete');
-	Route::delete('/notifications/delete_all', [NotificationController::class, 'deleteAllNotifications'])->name('customer.notifications.delete_all');
+	Route::delete('/notifications/{id}', [NotificationController::class, 'deleteNotification'])->name('customer.notifications.delete'); // old: notifications/delete/{id}
+	Route::delete('/notifications', [NotificationController::class, 'deleteAllNotifications'])->name('customer.notifications.delete_all'); // old: notifications/delete_all
 
-	// Service Unit
-	Route::get('su/schedules', [ServiceUnitController::class, 'getSchedules']);
-	Route::post('su/update_schedule_status', [ServiceUnitController::class, 'updateSchedule']);
-	Route::post('su/update_item_status', [ServiceUnitController::class, 'updateItem']);
+	// --- Service Complaints ---
+	Route::get('/complaints', [ServiceComplaintController::class, 'getComplaint']); // old: get_complaint
+	Route::post('/complaints', [ServiceComplaintController::class, 'storeComplaint']); // old: create_complaint
+	Route::get('/complaints/{id}', [ServiceComplaintController::class, 'viewComplaint']); // old: view_complaint/{id}
+	Route::post('/complaints/{id}', [ServiceComplaintController::class, 'updateComplaint']); // old: update_complaint/{id}
 
-	Route::get('su/bookings', [ServiceUnitController::class, 'getBookings']);
-	Route::post('su/update_wash_status', [ServiceUnitController::class, 'updateWash']);
-	Route::post('su/update_interior_status', [ServiceUnitController::class, 'updateInterior']);
-	Route::post('su/service_records', [ServiceUnitController::class, 'serviceRecords']);
-	Route::get('su/car_service_records', [ServiceUnitController::class, 'carServiceRecords']);
+	// --- Service Unit Module (SU) ---
+	Route::prefix('su')->group(function () {
+		Route::get('schedules', [ServiceUnitController::class, 'getSchedules']);
+		Route::get('bookings', [ServiceUnitController::class, 'getBookings']);
 
-	// Service Complaint
-	Route::post('create_complaint', [ServiceComplaintController::class, 'storeComplaint']);
-	Route::post('update_complaint/{id}', [ServiceComplaintController::class, 'updateComplaint']);
-	Route::get('view_complaint/{id}', [ServiceComplaintController::class, 'viewComplaint']);
-	Route::get('get_complaint', [ServiceComplaintController::class, 'getComplaint']);
+		// Status Updates
+		Route::post('schedules/status', [ServiceUnitController::class, 'updateSchedule']); // old: update_schedule_status
+		Route::post('items/status', [ServiceUnitController::class, 'updateItem']);         // old: update_item_status
+		Route::post('wash/status', [ServiceUnitController::class, 'updateWash']);          // old: update_wash_status
+		Route::post('interior/status', [ServiceUnitController::class, 'updateInterior']);  // old: update_interior_status
 
-	Route::get('su/view_complaint/{id}', [ServiceComplaintController::class, 'viewServiceUnitComplaint']);
-	Route::get('su/get_complaint', [ServiceComplaintController::class, 'getServiceUnitComplaint']);
-	Route::patch('su/update_complaint_status/{id}', [ServiceComplaintController::class, 'updateServiceUnitComplaintStatus']);
+		// Records
+		Route::post('service-records', [ServiceUnitController::class, 'serviceRecords']);  // old: service_records
+		Route::get('service-records/cars', [ServiceUnitController::class, 'carServiceRecords']); // old: car_service_records
+
+		// SU Complaints
+		Route::get('complaints', [ServiceComplaintController::class, 'getServiceUnitComplaint']); // old: get_complaint
+		Route::get('complaints/{id}', [ServiceComplaintController::class, 'viewServiceUnitComplaint']); // old: view_complaint/{id}
+		Route::patch('complaints/{id}/status', [ServiceComplaintController::class, 'updateServiceUnitComplaintStatus']); // old: update_complaint_status/{id}
+	});
 });
 
+// --- Fallback ---
 Route::fallback(function () {
 	return response()->json([
 		'success' => false,

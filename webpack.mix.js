@@ -16,7 +16,26 @@ mix.js('resources/js/app.js', 'public/js').vue()
         require('postcss-import'),
         require('tailwindcss'),
     ])
-    .webpackConfig(require('./webpack.config'));
+    .styles([
+        'node_modules/primevue/resources/themes/saga-blue/theme.css',
+        'node_modules/primevue/resources/primevue.min.css',
+        'node_modules/primeicons/primeicons.css',
+        'node_modules/vue3-perfect-scrollbar/dist/style.css',
+        'node_modules/vue-good-table-next/dist/vue-good-table-next.css',
+        'node_modules/v-calendar/dist/style.css',
+        'node_modules/vue-select/dist/vue-select.css'
+    ], 'public/css/vendor.css')
+    .webpackConfig({
+        plugins: [
+            new (require('webpack')).DefinePlugin({
+                __VUE_OPTIONS_API__: true,
+                __VUE_PROD_DEVTOOLS__: false,
+                __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
+            }),
+        ],
+        resolve: require('./webpack.config').resolve, // Preserve existing resolve config if any
+    })
+    .copy('node_modules/primeicons/fonts', 'public/css/fonts');
 
 if (mix.inProduction()) {
     mix.version();

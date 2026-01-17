@@ -15,7 +15,23 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UsersTableSeeder::class,
+            CarBrandsTableSeeder::class,
+            // CarModelsTableSeeder::class,
+            CarColorsTableSeeder::class,
+            // CarYearsTableSeeder::class,
+            CarTypesTableSeeder::class,
+            // CarFuelTypesTableSeeder::class,
+            // CarGearTypesTableSeeder::class,
+            // CarTransmissionTypesTableSeeder::class,
+            // CarBodyTypesTableSeeder::class,
+            // CarDoorsTableSeeder::class,
+            // CarSeatsTableSeeder::class,
+            // CarAirbagsTableSeeder::class,
+            // CarAirConditioningTableSeeder::class,
+            // CarPowerWindowsTableSeeder::class,
+            // CarPowerSteeringTableSeeder::class,
+            // CarPowerMirrorsTableSeeder::class,
+            // CarPowerLocksTableSeeder::class,
         ]);
-        // \App\Models\User::factory(10)->create();
     }
 }

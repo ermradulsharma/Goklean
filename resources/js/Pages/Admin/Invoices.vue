@@ -399,7 +399,8 @@
     margin: auto 15px;
 }
 .invoice-btn {
-    background-color: rgb(34 197 94 / var(--tw-bg-opacity)) !important;
-    border: 1px solid rgb(34 197 94 / var(--tw-bg-opacity)) !important;
+    background-color: #22c55e !important;
+    border: 1px solid #22c55e !important;
+    color: white !important;
 }
 </style>

@@ -1,13 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import 'primevue/resources/themes/saga-blue/theme.css';
-@import 'primevue/resources/primevue.min.css';
-@import 'primeicons/primeicons.css';
-@import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
-@import 'vue-good-table-next/dist/vue-good-table-next.css';
-@import 'v-calendar/dist/style.css';
-@import "vue-select/dist/vue-select.css";
 
 /* General Styles */
 
@@ -16,39 +9,45 @@
     --primary-color: #05887d;
     --secondary-color: #8d4aa5;
 }
-.export-btn{
-	margin-right:15px;
+
+.export-btn {
+    margin-right: 15px;
 }
 
 .page-heading {
     @apply py-4 text-2xl leading-tight text-gray-800 truncate;
 }
-.flex-date{
+
+.flex-date {
     display: flex;
     align-items: flex-start;
     margin-bottom: 1rem;
     flex-wrap: wrap;
 }
-.flex-col-first{
+
+.flex-col-first {
     width: 100%;
     max-width: 35%;
     flex: 0 0 35%;
 }
-.flex-col-second{
+
+.flex-col-second {
     width: 100%;
     max-width: 65%;
     flex: 0 0 65%;
 }
-.flex-col-second .w-full
-{
+
+.flex-col-second .w-full {
     margin-bottom: 1rem;
 }
-.day-height{
-	height: 42px;
+
+.day-height {
+    height: 42px;
     margin-bottom: 1rem;
     align-items: center;
     display: flex;
 }
+
 .app-heading {
     @apply text-xl font-semibold text-gray-900;
 }
@@ -90,7 +89,7 @@
 }
 
 .gk-btn-primary {
-    @apply  hover:bg-blue-800 bg-blue-600 text-white;
+    @apply hover:bg-blue-800 bg-blue-600 text-white;
 }
 
 .gk-btn-success {
@@ -181,6 +180,7 @@ table.vgt-table {
 .vgt-wrap__footer .footer__navigation__page-info span {
     @apply uppercase;
 }
+
 .vgt-wrap__footer .footer__navigation__page-btn span {
     @apply uppercase;
 }
@@ -203,7 +203,8 @@ table.vgt-table {
 .action-item {
     @apply w-full text-gray-700 block px-4 py-2 text-sm text-left hover:bg-gray-50;
 }
+
 .form-group.form-check .form-check-label {
-	min-width: 120px;
+    min-width: 120px;
     display: inline-block;
 }

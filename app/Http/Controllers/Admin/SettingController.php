@@ -5,20 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+
+use Inertia\Inertia;
+
 class SettingController extends Controller
 {
     public function general()
     {
-        return redirect()->back()->with('errorMessage', 'Settings Coming Soon');
+        return Inertia::render('Admin/Settings/General');
     }
 
     public function notification()
     {
-        return redirect()->back()->with('errorMessage', 'Settings Coming Soon');
+        return Inertia::render('Admin/Settings/Notification');
     }
 
     public function payment()
     {
-        return redirect()->back()->with('errorMessage', 'Settings Coming Soon');
+        return Inertia::render('Admin/Settings/Payment');
     }
 }
