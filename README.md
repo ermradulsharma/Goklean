@@ -92,6 +92,10 @@ The project uses PHPUnit for automated testing.
 vendor/bin/phpunit
 ```
 
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
 ## 📄 License
 
 Goklean is open-sourced software licensed under the [MIT license](LICENSE).
