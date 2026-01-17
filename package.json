@@ -1,4 +1,8 @@
 {
+    "name": "goklean",
+    "version": "1.1.0",
+    "description": "Smart Car Cleaning & Maintenance Platform management system.",
+    "author": "Mradul Sharma",
     "private": true,
     "scripts": {
         "dev": "npm run development",
