@@ -34,11 +34,11 @@ class CreateServiceComplaintsTable extends Migration
         if (!Schema::hasTable('service_complaints_images')) {
             Schema::create('service_complaints_images', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('service_complaints_id');
+                $table->unsignedBigInteger('service_complaint_id');
                 $table->string('image_path')->default('default_car_image.png');
                 $table->timestamps();
 
-                $table->foreign('service_complaints_id')->references('id')->on('service_complaints')->onDelete('cascade');
+                $table->foreign('service_complaint_id')->references('id')->on('service_complaints')->onDelete('cascade');
             });
         }
     }
@@ -50,6 +50,7 @@ class CreateServiceComplaintsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('service_complaints_images');
         Schema::dropIfExists('service_complaints');
     }
 }

@@ -21,6 +21,6 @@ class ServiceComplaint extends Model
     ];
     public function images()
     {
-        return $this->hasMany(ServiceComplaintImage::class, 'service_complaints_id');
+        return $this->hasMany(ServiceComplaintImage::class, 'service_complaint_id');
     }
 }

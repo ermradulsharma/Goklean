@@ -12,7 +12,7 @@ class ServiceComplaintImage extends Model
     use HasFactory, HasImage;
     protected $table = 'service_complaints_images';
     protected $fillable = [
-        'service_complaints_id',
+        'service_complaint_id',
         'image_path'
     ];
     protected $appends = [

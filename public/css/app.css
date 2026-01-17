@@ -1118,14 +1118,14 @@ select {
 .mb-4 {
   margin-bottom: 1rem;
 }
-.-mt-px {
-  margin-top: -1px;
-}
 .ml-0 {
   margin-left: 0px;
 }
 .-ml-3 {
   margin-left: -0.75rem;
+}
+.-mt-px {
+  margin-top: -1px;
 }
 .mb-2 {
   margin-bottom: 0.5rem;
@@ -1304,11 +1304,11 @@ select {
 .max-w-xl {
   max-width: 36rem;
 }
-.max-w-6xl {
-  max-width: 72rem;
-}
 .max-w-lg {
   max-width: 32rem;
+}
+.max-w-6xl {
+  max-width: 72rem;
 }
 .max-w-3xl {
   max-width: 48rem;
@@ -1558,11 +1558,11 @@ select {
 .border-b {
   border-bottom-width: 1px;
 }
-.border-r {
-  border-right-width: 1px;
-}
 .border-l {
   border-left-width: 1px;
+}
+.border-r {
+  border-right-width: 1px;
 }
 .border-gray-300 {
   --tw-border-opacity: 1;
@@ -1582,10 +1582,6 @@ select {
 .border-gray-100 {
   --tw-border-opacity: 1;
   border-color: rgb(243 244 246 / var(--tw-border-opacity));
-}
-.border-gray-400 {
-  --tw-border-opacity: 1;
-  border-color: rgb(156 163 175 / var(--tw-border-opacity));
 }
 .border-gray-500 {
   --tw-border-opacity: 1;
@@ -1766,9 +1762,6 @@ select {
 .pb-1 {
   padding-bottom: 0.25rem;
 }
-.pt-8 {
-  padding-top: 2rem;
-}
 .pl-12 {
   padding-left: 3rem;
 }
@@ -1777,6 +1770,9 @@ select {
 }
 .pb-16 {
   padding-bottom: 4rem;
+}
+.pt-8 {
+  padding-top: 2rem;
 }
 .pb-2 {
   padding-bottom: 0.5rem;
@@ -1927,14 +1923,6 @@ select {
 .text-green-500 {
   --tw-text-opacity: 1;
   color: rgb(34 197 94 / var(--tw-text-opacity));
-}
-.text-gray-200 {
-  --tw-text-opacity: 1;
-  color: rgb(229 231 235 / var(--tw-text-opacity));
-}
-.text-gray-300 {
-  --tw-text-opacity: 1;
-  color: rgb(209 213 219 / var(--tw-text-opacity));
 }
 .text-blue-400 {
   --tw-text-opacity: 1;
@@ -7450,7 +7438,7 @@ input[type="button"],input[type="submit"],input[type="reset"],input[type="file"]
     font-family: 'primeicons';
     font-display: block;
     src: url(/fonts/primeicons.eot?7fc4d8e224d1ff1b9c6256b15cbe43a7);
-    src: url(/fonts/primeicons.eot?7fc4d8e224d1ff1b9c6256b15cbe43a7?#iefix) format('embedded-opentype'), url(/fonts/primeicons.ttf?91bacab1f083f2795272499faf7e83dc) format('truetype'), url(/fonts/primeicons.woff?449aa8c65cdc5c2a868645403b9ea4d3) format('woff'), url(/fonts/primeicons.svg?c6e2053303524e39530c36f094129407?#primeicons) format('svg');
+    src: url(/fonts/primeicons.eot?7fc4d8e224d1ff1b9c6256b15cbe43a7?#iefix) format('embedded-opentype'), url(/fonts/primeicons.ttf?91bacab1f083f2795272499faf7e83dc) format('truetype'), url(/fonts/primeicons.woff?449aa8c65cdc5c2a868645403b9ea4d3) format('woff'), url(/fonts/primeicons.svg?4a5505fdfa30a9d118f33f020ee390c6?#primeicons) format('svg');
     font-weight: normal;
     font-style: normal;
 }

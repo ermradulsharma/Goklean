@@ -69,13 +69,13 @@
   ),
   'jenssegers/agent' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Jenssegers\\Agent\\AgentServiceProvider',
-    ),
     'aliases' => 
     array (
       'Agent' => 'Jenssegers\\Agent\\Facades\\Agent',
+    ),
+    'providers' => 
+    array (
+      0 => 'Jenssegers\\Agent\\AgentServiceProvider',
     ),
   ),
   'laravel/fortify' => 
@@ -129,13 +129,13 @@
   ),
   'spatie/laravel-fractal' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Spatie\\Fractal\\FractalServiceProvider',
-    ),
     'aliases' => 
     array (
       'Fractal' => 'Spatie\\Fractal\\FractalFacade',
+    ),
+    'providers' => 
+    array (
+      0 => 'Spatie\\Fractal\\FractalServiceProvider',
     ),
   ),
   'spatie/laravel-ray' => 

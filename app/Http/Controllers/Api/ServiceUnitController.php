@@ -223,7 +223,6 @@ class ServiceUnitController
                     'car_service_record_id' => $carServiceRecord->id,
                     'wash_type' => $imageData['wash_type'],
                     'image_type' => $imageData['image_type'] ?? null,
-                    'image' => 'placeholder', // placeholder until updated
                 ]);
 
                 if (isset($imageData['image']) && $imageData['image'] instanceof \Illuminate\Http\UploadedFile) {

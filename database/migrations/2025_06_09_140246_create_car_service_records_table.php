@@ -37,7 +37,6 @@ class CreateCarServiceRecordsTable extends Migration
                 $table->enum('wash_type', ['before_wash', 'after_wash'])->default('before_wash');
                 $table->string('image_type')->nullable(); // optional: e.g., 'interior', 'damage'
                 $table->string('image_path')->default('default_car_image.png');
-                $table->string('image');
                 $table->timestamps();
 
                 $table->foreign('car_service_record_id')->references('id')->on('car_service_records')->onDelete('cascade');
