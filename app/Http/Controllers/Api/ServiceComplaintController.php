@@ -50,7 +50,7 @@ class ServiceComplaintController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $existingUnresolvedComplaint->status == 'created' ? 'You already create a complaint agait this booking' : 'Your complaint is pending. Please wait sometime.',
-                'status' => Response::HTTP_CONFLICT 
+                'status' => Response::HTTP_CONFLICT
             ], Response::HTTP_CONFLICT);
         }
         $complaint = ServiceComplaint::create([
@@ -64,7 +64,7 @@ class ServiceComplaintController extends Controller
         if (isset($request['images']) && !empty($request['images'])) {
             foreach ($request['images'] as $imageData) {
                 $complaintServiceImage = ServiceComplaintImage::create([
-                    'service_complaints_id' => $complaint->id,
+                    'service_complaint_id' => $complaint->id,
                 ]);
                 if (isset($imageData) && $imageData instanceof \Illuminate\Http\UploadedFile) {
                     $complaintServiceImage->updateImage($imageData, 'complaint_service');
@@ -123,7 +123,7 @@ class ServiceComplaintController extends Controller
             'description' => $request->description,
         ]);
         $keptImageIds = $request->kept_image_ids;
-        $existingImages = ServiceComplaintImage::where('service_complaints_id', $complaint->id)->get();
+        $existingImages = ServiceComplaintImage::where('service_complaint_id', $complaint->id)->get();
         foreach ($existingImages as $image) {
             if (!in_array($image->id, $keptImageIds)) {
                 if (Storage::disk('public')->exists($image->image_path)) {
@@ -137,7 +137,7 @@ class ServiceComplaintController extends Controller
         if (isset($request['images']) && !empty($request['images'])) {
             foreach ($request['images'] as $imageData) {
                 $complaintServiceImage = ServiceComplaintImage::create([
-                    'service_complaints_id' => $complaint->id,
+                    'service_complaint_id' => $complaint->id,
                 ]);
                 if (isset($imageData) && $imageData instanceof \Illuminate\Http\UploadedFile) {
                     $complaintServiceImage->updateImage($imageData, 'complaint_service');
