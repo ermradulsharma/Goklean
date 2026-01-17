@@ -1,8 +1,13 @@
 {
-    "name": "laravel/laravel",
+    "name": "mradulsharma/goklean",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "description": "Smart Car Cleaning & Maintenance Platform management system.",
+    "keywords": [
+        "goklean",
+        "car-cleaning",
+        "maintenance",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.1",
